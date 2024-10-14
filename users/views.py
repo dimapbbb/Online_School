@@ -4,7 +4,8 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
 
 from users.models import User, Payment
-from users.serializers import UserSerializer, PaymentSerializer
+from users.permissions import IsOwnerAccount, IsSuperUser
+from users.serializers import UserSerializer, PaymentSerializer, UserDetailSerializer
 
 
 class UserCreateAPIView(generics.CreateAPIView):
@@ -18,26 +19,30 @@ class UserListAPIView(generics.ListAPIView):
 
 
 class UserUpdateAPIView(generics.UpdateAPIView):
-    serializer_class = UserSerializer
+    serializer_class = UserDetailSerializer
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwnerAccount]
 
 
 class UserRetrieveAPIView(generics.RetrieveAPIView):
-    serializer_class = UserSerializer
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.user == super().get_object():
+            return UserDetailSerializer
+        return UserSerializer
 
 
 class UserDestroyAPIView(generics.DestroyAPIView):
     queryset = User.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsOwnerAccount]
 
 
 class PaymentListAPIView(generics.ListAPIView):
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsSuperUser]
 
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     ordering_fields = ['date']
