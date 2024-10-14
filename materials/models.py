@@ -1,6 +1,11 @@
 from django.db import models
 
+from config.settings import AUTH_USER_MODEL
+
+
 class Course(models.Model):
+    owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name="Владелец", blank=True, null=True)
+
     title = models.CharField(max_length=100, verbose_name="Название")
     preview = models.FileField(upload_to="materials/", verbose_name="Превью")
     description = models.TextField(verbose_name="Описание")
@@ -14,6 +19,8 @@ class Course(models.Model):
 
 
 class Lesson(models.Model):
+    owner = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.SET_NULL, verbose_name="Владелец", blank=True, null=True)
+
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lessons")
 
     title = models.CharField(max_length=100, verbose_name="Название")
