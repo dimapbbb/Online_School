@@ -10,7 +10,7 @@ class IsModerator(BasePermission):
 class IsOwner(BasePermission):
 
     def has_permission(self, request, view):
-        return request.user == view.get_owner()
+        return request.user == view.get_owner
 
 
 class IsOwnerAccount(BasePermission):
