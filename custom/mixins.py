@@ -1,4 +1,6 @@
 class GetOwnerMixin:
+    queryset = None
+    kwargs = {}
 
     @property
     def get_owner(self):
