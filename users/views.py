@@ -1,9 +1,11 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import generics
+from rest_framework import generics, views
 from rest_framework.filters import OrderingFilter
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
-from users.models import User, Payment
+from materials.models import Course
+from users.models import User, Payment, Subscriptions
 from users.permissions import IsOwnerAccount, IsSuperUser
 from users.serializers import UserSerializer, PaymentSerializer, UserDetailSerializer
 
@@ -47,3 +49,21 @@ class PaymentListAPIView(generics.ListAPIView):
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     ordering_fields = ['date']
     filterset_fields = ['method', 'paid_course', 'paid_lesson']
+
+
+class SubscriptionAPIView(views.APIView):
+
+    def post(self, *args, **kwargs):
+        user = self.request.user
+        course = Course.objects.get(id=self.kwargs.get('pk'))
+
+        for subscription in user.subscriptions.all():
+            if subscription.course == course:
+                subscription.delete()
+                message = "Подписка удалена"
+                return Response({'message': message})
+
+        Subscriptions.objects.create(user=user, course=course)
+        message = "Подписка добавлена"
+
+        return Response({'message': message})

@@ -8,5 +8,5 @@ class UrlValidator:
 
     def __call__(self, value):
         link = value.get('link_to_video')
-        if link.find('youtube') == -1:
+        if not link.startswith("https://www.youtube.com"):
             raise ValidationError("Можно сохранить ссылку только на 'youtube'")
