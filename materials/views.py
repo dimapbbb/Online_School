@@ -3,13 +3,20 @@ from rest_framework.permissions import IsAuthenticated
 
 from custom.mixins import GetOwnerMixin
 from materials.models import Course, Lesson
+from materials.paginators import MyPagination
 from materials.serializers import CourseSerializer, LessonSerializer
 from users.permissions import IsModerator, IsOwner
 
 
 class CourseViewSet(GetOwnerMixin, viewsets.ModelViewSet):
+    pagination_class = MyPagination
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
+
+    def get(self, request):
+        paginated_queryset = self.paginate_queryset(self.queryset)
+        serializer = self.serializer_class(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
@@ -39,9 +46,15 @@ class LessonCreateAPIView(generics.CreateAPIView):
 
 
 class LessonListAPIView(generics.ListAPIView):
+    pagination_class = MyPagination
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = []
+
+    def get(self, request):
+        paginated_queryset = self.paginate_queryset(self.queryset)
+        serializer = self.serializer_class(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 class LessonRetrieveAPIView(GetOwnerMixin, generics.RetrieveAPIView):
