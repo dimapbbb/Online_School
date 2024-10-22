@@ -3,7 +3,7 @@ from django.core.management import BaseCommand
 from materials.models import Lesson
 
 
-courses_data = [
+lessons_data = [
     {
         "id": 7,
         "course_id": 2,
@@ -34,5 +34,5 @@ courses_data = [
 class Command(BaseCommand):
 
     def handle(self, *args, **options):
-        for data in courses_data:
+        for data in lessons_data:
             Lesson.objects.create(**data)
