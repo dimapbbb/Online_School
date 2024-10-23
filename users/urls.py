@@ -8,7 +8,9 @@ from users.views import (UserUpdateAPIView,
                          UserCreateAPIView,
                          UserListAPIView,
                          UserDestroyAPIView,
-                         SubscriptionAPIView)
+                         SubscriptionAPIView,
+                         PaymentCourseAPIView,
+                         GetStatusPaymentAPIView)
 
 app_name = UsersConfig.name
 
@@ -24,6 +26,8 @@ urlpatterns = [
     path('delete_user/<int:pk>/', UserDestroyAPIView.as_view(), name='delete_user'),
     # payments
     path('payments_list/', PaymentListAPIView.as_view(), name='payments_list'),
+    path('payment_course/<int:pk>/', PaymentCourseAPIView.as_view(), name="payment_course"),
+    path('get_status_payment_course/<int:pk>/', GetStatusPaymentAPIView.as_view(), name="get_status"),
     # subscription
     path('subscribe/<int:pk>', SubscriptionAPIView.as_view(), name='subscription'),
 ]
