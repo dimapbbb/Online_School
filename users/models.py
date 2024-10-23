@@ -36,6 +36,9 @@ class Payment(models.Model):
     amount = models.PositiveIntegerField(verbose_name="Сумма оплаты")
     method = models.CharField(choices=method_payments, verbose_name="Способ оплаты")
 
+    session_id = models.CharField(max_length=100, blank=True, null=True)
+    status = models.CharField(max_length=100, blank=True, null=True)
+
     def __str__(self):
         product = self.paid_course if self.paid_course else self.paid_lesson
         return f"{self.date}: {self.user} купил {product}. {self.method} - {self.amount} руб."

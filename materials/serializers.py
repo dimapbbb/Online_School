@@ -17,9 +17,11 @@ class CourseSerializer(serializers.ModelSerializer):
     subscribe = SerializerMethodField()
     lessons = LessonSerializer(many=True, required=False)
 
+    get_link_for_payment = SerializerMethodField()
+
     class Meta:
         model = Course
-        fields = ('id', 'title', 'description', 'lessons_count', 'lessons', 'subscribe')
+        fields = ('id', 'title', 'price', 'description', 'lessons_count', 'lessons', 'subscribe', 'get_link_for_payment')
 
     @staticmethod
     def get_lessons_count(obj):
@@ -30,3 +32,7 @@ class CourseSerializer(serializers.ModelSerializer):
             return True
         else:
             return False
+
+    @staticmethod
+    def get_get_link_for_payment(obj):
+        return f"http://localhost:8000/payment_course/{obj.pk}/"

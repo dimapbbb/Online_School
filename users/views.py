@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from materials.models import Course
+from materials.services import create_session, session_retrieve
 from users.models import User, Payment, Subscriptions
 from users.permissions import IsOwnerAccount, IsSuperUser
 from users.serializers import UserSerializer, PaymentSerializer, UserDetailSerializer
@@ -55,6 +56,7 @@ class PaymentListAPIView(generics.ListAPIView):
 
 
 class SubscriptionAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, *args, **kwargs):
         user = self.request.user
@@ -70,3 +72,39 @@ class SubscriptionAPIView(views.APIView):
         message = "Подписка добавлена"
 
         return Response({'message': message})
+
+
+class PaymentCourseAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, *args, **kwargs):
+        course = Course.objects.get(id=self.kwargs.get('pk'))
+        session = create_session(course)
+
+        Payment.objects.create(
+            user = self.request.user,
+            paid_course = course,
+            amount = course.price,
+            method = 'transfer',
+            session_id = session.get('id'),
+            status = session.get('status')
+        )
+        return Response({'link_for_payment': session.get('url')})
+
+
+class GetStatusPaymentAPIView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        payment = Payment.objects.get(
+            user=self.request.user,
+            paid_course_id = self.kwargs.get('pk')
+        )
+        status = session_retrieve(payment.session_id).get('status')
+        payment.status = status
+        payment.save()
+
+        return Response({'Статус платежа': status})
+
+
+
