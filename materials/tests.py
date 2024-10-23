@@ -2,8 +2,6 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 
-from materials.management.commands.bulk_create_courses import courses_data
-from materials.management.commands.bulk_create_lessons import lessons_data
 from materials.models import Course, Lesson
 from users.models import User
 

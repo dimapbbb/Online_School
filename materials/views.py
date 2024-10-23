@@ -9,6 +9,7 @@ from users.permissions import IsModerator, IsOwner
 
 
 class CourseViewSet(GetOwnerMixin, viewsets.ModelViewSet):
+    """ CRUD для курсов """
     pagination_class = MyPagination
     serializer_class = CourseSerializer
     queryset = Course.objects.all()

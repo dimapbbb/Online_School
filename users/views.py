@@ -18,6 +18,7 @@ class UserListAPIView(generics.ListAPIView):
     serializer_class = UserSerializer
     queryset = User.objects.all()
     permission_classes = [IsAuthenticated]
+    swagger_schema = None
 
 
 class UserUpdateAPIView(generics.UpdateAPIView):
@@ -39,12 +40,14 @@ class UserRetrieveAPIView(generics.RetrieveAPIView):
 class UserDestroyAPIView(generics.DestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [IsOwnerAccount]
+    swagger_schema = None
 
 
 class PaymentListAPIView(generics.ListAPIView):
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     permission_classes = [IsSuperUser]
+    swagger_schema = None
 
     filter_backends = [OrderingFilter, DjangoFilterBackend]
     ordering_fields = ['date']
