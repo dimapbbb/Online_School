@@ -10,6 +10,7 @@ class Course(models.Model):
     preview = models.FileField(upload_to="materials/", verbose_name="Превью")
     description = models.TextField(verbose_name="Описание")
     price = models.PositiveIntegerField(default=0, verbose_name="Цена")
+    last_update = models.DateTimeField(auto_now=True, verbose_name="Дата и время последнего обновления", blank=True, null=True)
 
     def __str__(self):
         return f"{self.title}"
