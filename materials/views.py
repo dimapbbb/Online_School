@@ -5,6 +5,7 @@ from custom.mixins import GetOwnerMixin
 from materials.models import Course, Lesson
 from materials.paginators import MyPagination
 from materials.serializers import CourseSerializer, LessonSerializer
+from materials.tasks import send_mail_of_update
 from users.permissions import IsModerator, IsOwner
 
 
@@ -21,6 +22,10 @@ class CourseViewSet(GetOwnerMixin, viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
+
+    def perform_update(self, serializer):
+        update_course = serializer.save()
+        send_mail_of_update.delay(update_course.pk)
 
     def get_permissions(self):
         if self.action == 'list':
