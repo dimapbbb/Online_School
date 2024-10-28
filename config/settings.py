@@ -113,7 +113,7 @@ CELERY_BEAT_SCHEDULE = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Russia/Moscow'
 
 USE_I18N = True
 
