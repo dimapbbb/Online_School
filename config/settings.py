@@ -104,6 +104,12 @@ SIMPLE_JWT = {
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
+CELERY_BEAT_SCHEDULE = {
+    'search_offline_users': {
+        'task': 'users.tasks.check_users',
+        'schedule': timedelta(days=1),
+    },
+}
 
 LANGUAGE_CODE = 'en-us'
 
