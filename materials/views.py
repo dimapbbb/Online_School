@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+from django.utils import timezone
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 
@@ -25,7 +28,10 @@ class CourseViewSet(GetOwnerMixin, viewsets.ModelViewSet):
 
     def perform_update(self, serializer):
         update_course = serializer.save()
-        send_mail_of_update.delay(update_course.pk)
+        dt_now = timezone.make_aware(datetime.now(), timezone.get_current_timezone())
+
+        if update_course.last_update < dt_now - timedelta(hours=4):
+            send_mail_of_update.delay(update_course.pk)
 
     def get_permissions(self):
         if self.action == 'list':
